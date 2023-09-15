@@ -1,0 +1,18 @@
+name: generate
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  pr-hooks:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: check merged
+        if: github.event.pull_request.merged != true
+        run: exit 1
