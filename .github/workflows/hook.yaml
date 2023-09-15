@@ -10,9 +10,19 @@ on:
 jobs:
   pr-hooks:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        repo: [asragi/RingoSuPBGo, asragi/RingoSuPBCS]
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: check merged
         if: github.event.pull_request.merged != true
         run: exit 1
+      - name: dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.ACCESS_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: compile-pb
+          client-payload: '{"pr_title": "${{ github.event.pull_request.title }}"}'
